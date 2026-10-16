@@ -1,0 +1,6 @@
+third_party/
+app_res.o
+*.exe
+*.o
+*.obj
+*.res
