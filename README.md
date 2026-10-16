@@ -12,6 +12,19 @@ Plain Win32 interface, statically linked: nothing to install and no extra DLLs.
 ## Requirements
 Windows 10 version 2004 (build 19041) or newer, 64-bit.
 
+## If Windows shows a warning
+New or little-downloaded apps can trigger the blue "Windows protected your PC" (SmartScreen) screen.
+The app is open source and you can read or build it yourself. To run it:
+
+**Option 1: at launch**
+1. On the blue screen, click **More info**.
+2. Click **Run anyway**.
+
+**Option 2: unblock the file first**
+1. Right-click the downloaded `AudibleRecorder.exe` and choose **Properties**.
+2. At the bottom of the **General** tab, tick **Unblock** (next to "Security").
+3. Click **OK**, then run the file as usual.
+
 ## Use
 Chrome plays the audio of **all** its tabs through one shared audio process, so recording
 "Chrome" always includes every tab. To record only Audible:
@@ -40,6 +53,18 @@ MSVC: build libopus statically with `/MT`
     rc app.rc
     cl /O2 /MT /EHsc /I<opus>\include main.cpp opus.lib app.res user32.lib gdi32.lib comdlg32.lib ole32.lib /link /SUBSYSTEM:WINDOWS
 
+## Code signing policy
+Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+
+- Only `AudibleRecorder.exe` files built by this repository's GitHub Actions workflow
+  (`.github/workflows/build.yml`) from the source in this repository are signed.
+- Roles: author, reviewer and approver: [dubnikov](https://github.com/dubnikov).
+
+## Privacy
+This program will not transfer any information to other networked systems unless specifically
+requested by the user or the person installing or operating it. Recordings are written only to the
+file you choose. (The "Open Audible in separate browser" button just starts your browser.)
+
 ## Licenses
+This project is released under the MIT License (see `LICENSE`).
 Includes [libopus](https://opus-codec.org/) (BSD 3-clause), see `licenses/opus-COPYING.txt`.
-The project's own license is up to the repository owner (add a `LICENSE` file).
