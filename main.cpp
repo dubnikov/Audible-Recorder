@@ -490,9 +490,9 @@ static void AddAudioSessions() {
 // ---------------------------------------------------------------------------
 // UI
 // ---------------------------------------------------------------------------
-enum { ID_TITLE = 101, ID_PATH, ID_BROWSE, ID_BITRATE, ID_REC, ID_STATUS, ID_TIME, ID_REFRESH, ID_TARGET, ID_LAUNCH };
+enum { ID_PATH = 101, ID_BROWSE, ID_BITRATE, ID_REC, ID_STATUS, ID_TIME, ID_REFRESH, ID_TARGET, ID_LAUNCH };
 
-static HWND g_hTitle, g_hPath, g_hBrowse, g_hBitrate, g_hRec, g_hStatus, g_hTime, g_hRefresh, g_hTarget, g_hLaunch;
+static HWND g_hPath, g_hBrowse, g_hBitrate, g_hRec, g_hStatus, g_hTime, g_hRefresh, g_hTarget, g_hLaunch;
 static HFONT g_font;
 static int g_dpi = 96;
 
@@ -512,7 +512,6 @@ static void DefaultPath(wchar_t* out, size_t cch) {
 }
 
 static void SetEditable(bool on) {
-    EnableWindow(g_hTitle, on);
     EnableWindow(g_hPath, on);
     EnableWindow(g_hBrowse, on);
     EnableWindow(g_hBitrate, on);
@@ -529,10 +528,10 @@ static void RefreshTargets(HWND hwnd) {
     g_cands.clear();
     EnumCtx c;
     memset(&c, 0, sizeof c);
-    GetWindowTextW(g_hTitle, c.needle, 256);
+    lstrcpynW(c.needle, L"Audible Cloud Player", 256);
     CharLowerBuffW(c.needle, (DWORD)lstrlenW(c.needle));
     c.self = hwnd;
-    if (c.needle[0]) EnumWindows(EnumProc, (LPARAM)&c);
+    EnumWindows(EnumProc, (LPARAM)&c);
     AddAudioSessions();
 
     SendMessageW(g_hTarget, CB_RESETCONTENT, 0, 0);
@@ -702,26 +701,23 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof ncm, &ncm, 0);
         g_font = CreateFontIndirectW(&ncm.lfMessageFont);
 
-        Make(hwnd, L"STATIC", L"Window title:", SS_LEFT, 16, 20, 100, 20, -1);
-        g_hTitle = Make(hwnd, L"EDIT", L"Audible Cloud Player", ES_AUTOHSCROLL | WS_TABSTOP, 120, 17, 300, 24, ID_TITLE, WS_EX_CLIENTEDGE);
+        Make(hwnd, L"STATIC", L"Record from:", SS_LEFT, 16, 20, 100, 20, -1);
+        g_hTarget = Make(hwnd, L"COMBOBOX", L"", CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP, 120, 17, 300, 220, ID_TARGET);
         g_hRefresh = Make(hwnd, L"BUTTON", L"Refresh", BS_PUSHBUTTON | WS_TABSTOP, 428, 16, 76, 26, ID_REFRESH);
 
-        Make(hwnd, L"STATIC", L"Record from:", SS_LEFT, 16, 56, 100, 20, -1);
-        g_hTarget = Make(hwnd, L"COMBOBOX", L"", CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP, 120, 53, 384, 220, ID_TARGET);
-
-        Make(hwnd, L"STATIC", L"Save to:", SS_LEFT, 16, 92, 100, 20, -1);
+        Make(hwnd, L"STATIC", L"Save to:", SS_LEFT, 16, 56, 100, 20, -1);
         wchar_t p[1024];
         DefaultPath(p, 1024);
-        g_hPath = Make(hwnd, L"EDIT", p, ES_AUTOHSCROLL | WS_TABSTOP, 120, 89, 300, 24, ID_PATH, WS_EX_CLIENTEDGE);
-        g_hBrowse = Make(hwnd, L"BUTTON", L"Browse...", BS_PUSHBUTTON | WS_TABSTOP, 428, 88, 76, 26, ID_BROWSE);
+        g_hPath = Make(hwnd, L"EDIT", p, ES_AUTOHSCROLL | WS_TABSTOP, 120, 53, 300, 24, ID_PATH, WS_EX_CLIENTEDGE);
+        g_hBrowse = Make(hwnd, L"BUTTON", L"Browse...", BS_PUSHBUTTON | WS_TABSTOP, 428, 52, 76, 26, ID_BROWSE);
 
-        Make(hwnd, L"STATIC", L"Bitrate (kbps):", SS_LEFT, 16, 128, 100, 20, -1);
-        g_hBitrate = Make(hwnd, L"EDIT", L"96", ES_NUMBER | ES_AUTOHSCROLL | WS_TABSTOP, 120, 125, 60, 24, ID_BITRATE, WS_EX_CLIENTEDGE);
-        g_hLaunch = Make(hwnd, L"BUTTON", L"Open Audible in separate browser", BS_PUSHBUTTON | WS_TABSTOP, 250, 124, 254, 26, ID_LAUNCH);
+        Make(hwnd, L"STATIC", L"Bitrate (kbps):", SS_LEFT, 16, 92, 100, 20, -1);
+        g_hBitrate = Make(hwnd, L"EDIT", L"96", ES_NUMBER | ES_AUTOHSCROLL | WS_TABSTOP, 120, 89, 60, 24, ID_BITRATE, WS_EX_CLIENTEDGE);
+        g_hLaunch = Make(hwnd, L"BUTTON", L"Open Audible in separate browser", BS_PUSHBUTTON | WS_TABSTOP, 250, 88, 254, 26, ID_LAUNCH);
 
-        g_hRec = Make(hwnd, L"BUTTON", L"Record", BS_PUSHBUTTON | WS_TABSTOP, 16, 166, 110, 34, ID_REC);
-        g_hTime = Make(hwnd, L"STATIC", L"00:00:00", SS_LEFT, 140, 174, 80, 20, ID_TIME);
-        g_hStatus = Make(hwnd, L"STATIC", L"", SS_LEFT, 16, 212, 488, 44, ID_STATUS);
+        g_hRec = Make(hwnd, L"BUTTON", L"Record", BS_PUSHBUTTON | WS_TABSTOP, 16, 130, 110, 34, ID_REC);
+        g_hTime = Make(hwnd, L"STATIC", L"00:00:00", SS_LEFT, 140, 138, 80, 20, ID_TIME);
+        g_hStatus = Make(hwnd, L"STATIC", L"", SS_LEFT, 16, 176, 488, 44, ID_STATUS);
         RefreshTargets(hwnd);
         return 0;
     }
@@ -786,7 +782,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int show) {
     RegisterClassExW(&wc);
 
     DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-    RECT r = {0, 0, S(520), S(266)};
+    RECT r = {0, 0, S(520), S(230)};
     AdjustWindowRect(&r, style, FALSE);
     HWND hwnd = CreateWindowExW(0, wc.lpszClassName, L"Audible Recorder", style, CW_USEDEFAULT, CW_USEDEFAULT,
                                 r.right - r.left, r.bottom - r.top, nullptr, nullptr, inst, nullptr);
