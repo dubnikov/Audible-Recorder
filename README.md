@@ -32,8 +32,8 @@ Chrome plays the audio of **all** its tabs through one shared audio process, so 
 1. Click **Open Audible in separate browser**. It starts Chrome (or Edge) with its own profile,
    which is a separate process tree. Sign in once, play Audible there, and keep other browsing
    (YouTube etc.) in your normal browser.
-2. Press **Refresh**. The **Record from** list shows windows matching the title filter
-   (default "Audible Cloud Player") and processes currently playing audio, each with its PID.
+2. Press **Refresh**. The **Record from** list shows windows titled "Audible Cloud Player" and
+   processes currently playing audio, each with its PID.
 3. Pick the entry that starts with **Isolated - safe**, press **Record**, then **Stop**.
 
 If you pick a regular browser instance, the app warns that all its tabs/windows are recorded.
